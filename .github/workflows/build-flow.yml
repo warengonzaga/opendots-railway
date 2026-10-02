@@ -18,7 +18,7 @@ jobs:
       pull-requests: write
       security-events: write
       actions: read
-    uses: wgtechlabs/build-flow-action/.github/workflows/app.yml@b1ef877806d3549711252d226b13c4ffc4cd7854 # v0.3.0
+    uses: wgtechlabs/build-flow-action/.github/workflows/app.yml@260b9a063ef59ccc760155c19902320feb7e25cb # v0.3.1
     with:
       enable-container: true
       enable-release: true
