@@ -25,6 +25,7 @@ jobs:
       publish-dev-artifacts: false
       publish-pr-artifacts: false
       publish-manual-artifacts: false
+      codeql-build-mode: none
       ci-profile: node
       ci-runtime-version: '24'
       ci-test-command: npm test
