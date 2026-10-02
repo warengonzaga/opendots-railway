@@ -2,11 +2,11 @@
 
 Deploy [OpenDots by CopilotKit](https://github.com/CopilotKit/OpenDots) with an authenticated app, persistent pages and settings, and a private read-only browser service.
 
-This repository packages upstream commit [`b01ac1f`](https://github.com/CopilotKit/OpenDots/tree/b01ac1f6a903e5e56c119d960901353ac0a3d171) without changing its application code. It follows the [OpenBot Railway template](https://railway.com/deploy/openbot) approach: pin the application source, generate secrets, persist state, and keep supporting services private. OpenDots already includes owner login, agents, and scheduling, so no separate gateway, Postgres, or cron worker is needed.
+This repository packages upstream commit [`b01ac1f`](https://github.com/CopilotKit/OpenDots/tree/b01ac1f6a903e5e56c119d960901353ac0a3d171) with a small Luna compatibility adjustment. It follows the [OpenBot Railway template](https://railway.com/deploy/openbot) approach: pin the application source, generate secrets, persist state, and keep supporting services private. OpenDots already includes owner login, agents, and scheduling, so no separate gateway, Postgres, or cron worker is needed.
 
 **Scope:** chat, Dots, Spaces/pages, recurring work, and read-only public-page browsing. Persistent per-Dot computers, browser logins, terminal access, and computer takeover are **not included**: upstream requires a Docker-socket supervisor and Docker-network endpoints. An external supervisor URL alone does not make that feature work on Railway. See [upstream computer deployment](https://github.com/CopilotKit/OpenDots/blob/b01ac1f6a903e5e56c119d960901353ac0a3d171/docs/COMPUTERS.md).
 
-Deploy with the [OpenDots Railway template](https://railway.com/deploy/opendots), then provide your CopilotKit Intelligence API key and OpenAI API key. GPT-4.1 mini and the standard OpenAI endpoint are preconfigured.
+Deploy with the [OpenDots Railway template](https://railway.com/deploy/opendots), then provide your CopilotKit Intelligence API key and OpenAI API key. GPT-6 Luna and the standard OpenAI endpoint are preconfigured.
 
 ## Recreate the Railway template
 
@@ -41,7 +41,7 @@ Set these variables in the **template editor**. `secret()` is a template functio
 | `BROWSER_SECRET` | `${{Browser.BROWSER_SECRET}}` |
 | `INTELLIGENCE_API_KEY` | Required input; the user's CopilotKit Intelligence project key |
 | `OPENAI_API_KEY` | Required input; the user's model-provider API key |
-| `OPENAI_MODEL` | `gpt-4.1-mini` (preconfigured; change only to use another model) |
+| `OPENAI_MODEL` | `gpt-6-luna` (preconfigured; change only to use another model) |
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` |
 
 ### Browser variables
@@ -57,6 +57,8 @@ Use [MARKETPLACE.md](MARKETPLACE.md) for the listing description. Create the tem
 
 After deployment, open the OpenDots domain and sign in with the generated `OWNER_TOKEN` from that service's Variables tab. Keep it private. Railway terminates HTTPS; `APP_ORIGIN` must match the exact public HTTPS origin without a trailing slash. Update it if you add a custom domain.
 
+GPT-6 Luna uses `reasoning_effort: "none"` for tool calling through the pinned app's Chat Completions integration, as required by [OpenAI](https://developers.openai.com/api/docs/models/gpt-6-luna). The build applies this setting only to `gpt-6-luna` on the standard OpenAI endpoint; other model/provider settings remain unchanged. Luna reasoning with tools would require a Responses API migration.
+
 The model and API URL require no input for OpenAI. To use another OpenAI-compatible provider, change `OPENAI_BASE_URL` and `OPENAI_MODEL` to that provider's endpoint and model name, and supply its API key as `OPENAI_API_KEY`.
 
 ## Deploy through infrastructure as code
@@ -64,7 +66,7 @@ The model and API URL require no input for OpenAI. To use another OpenAI-compati
 The supplied `.railway/railway.ts` uses Railway's current TypeScript IaC SDK. It creates the two services and a volume; it does not create or publish a marketplace template.
 
 1. Create a new empty Railway project and link it using the current [Railway CLI](https://docs.railway.com/guides/cli). Use a dedicated project: this configuration owns its resource graph.
-2. Create shared variables `OWNER_TOKEN` and `BROWSER_SECRET` with **different**, randomly generated values of at least 24 characters. Also create `INTELLIGENCE_API_KEY` and `OPENAI_API_KEY`. The configuration supplies `OPENAI_MODEL=gpt-4.1-mini` and `OPENAI_BASE_URL=https://api.openai.com/v1`. Keep all credentials in Railway, not this repository.
+2. Create shared variables `OWNER_TOKEN` and `BROWSER_SECRET` with **different**, randomly generated values of at least 24 characters. Also create `INTELLIGENCE_API_KEY` and `OPENAI_API_KEY`. The configuration supplies `OPENAI_MODEL=gpt-6-luna` and `OPENAI_BASE_URL=https://api.openai.com/v1`. Keep all credentials in Railway, not this repository.
 3. Run:
 
    ```sh
@@ -110,6 +112,8 @@ npm run build:app
 npm run build:browser
 npm run test:smoke
 ```
+
+Each image build also runs the upstream agent tests, including Luna request settings, tool execution and continuation, and unchanged custom-provider behavior. These tests mock model responses and do not verify live Luna access or answer quality.
 
 The smoke check uses fresh disposable containers and a volume, verifies authentication/origin rejection, app privilege dropping, page persistence across container replacement, browser authentication, private-target blocking, and a real public-page capture. It needs no model credentials. [Build Flow](https://github.com/wgtechlabs/build-flow-action) runs these checks on pull requests, pushes to `dev`/`main`, manual runs, and published releases. Gitleaks runs on branch, pull request, and manual events; its bundled action does not support release events, so release only commits that passed those checks. CI success does not verify Railway networking, paid model calls, Slack, or voice.
 

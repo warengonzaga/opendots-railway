@@ -57,8 +57,10 @@ authorization.
 ## Deployment invariants
 
 - Keep upstream application source pinned to a full commit SHA in `Dockerfile`.
-  This wrapper does not modify upstream application code; review upstream changes
-  and rebuild both images when updating the pin.
+  The only application adjustment is `prepare-upstream.mjs`, which enables Luna
+  tool calling on the standard OpenAI endpoint and adds upstream regression cases.
+  Keep it narrowly scoped and fail on source drift; review upstream changes and
+  rebuild both images when updating the pin.
 - Preserve both Docker targets, `app` and `browser`, selected by
   `OPENDOTS_SERVICE`. Leave Railway start commands unset so image commands run.
 - Expose only OpenDots publicly. Keep Browser private and authenticated; preserve

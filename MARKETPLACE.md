@@ -14,7 +14,7 @@ You need a Railway account, a CopilotKit Intelligence project, and access to a s
 
 ### Deployment Dependencies
 
-At deployment, provide only your CopilotKit Intelligence API key and OpenAI API key. The template preconfigures `OPENAI_MODEL=gpt-4.1-mini` and `OPENAI_BASE_URL=https://api.openai.com/v1`; no model or URL input is needed. To use another OpenAI-compatible provider, change those two settings to its endpoint and model name and supply its API key.
+At deployment, provide only your CopilotKit Intelligence API key and OpenAI API key. The template preconfigures `OPENAI_MODEL=gpt-6-luna` and `OPENAI_BASE_URL=https://api.openai.com/v1`; no model or URL input is needed. To use another OpenAI-compatible provider, change those two settings to its endpoint and model name and supply its API key.
 
 Open the OpenDots URL and sign in using the generated `OWNER_TOKEN` from the OpenDots service's Variables tab. Keep that token private. Pages and settings persist on the volume; conversation history is stored by your CopilotKit Intelligence project.
 
@@ -43,4 +43,4 @@ Railway builds both services from the deployment repository, provides HTTPS for 
 - [CopilotKit Intelligence](https://intelligence.copilotkit.ai)
 - [Upstream setup](https://github.com/CopilotKit/OpenDots/blob/b01ac1f6a903e5e56c119d960901353ac0a3d171/docs/SETUP.md)
 
-This independently maintained package keeps upstream application code unchanged. Review the deployment repository's verification results and limitations when upgrading.
+This independently maintained package pins upstream application code and applies a small GPT-6 Luna tool-calling compatibility adjustment. Review the deployment repository's verification results and limitations when upgrading.
