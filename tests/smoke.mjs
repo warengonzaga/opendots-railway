@@ -55,7 +55,7 @@ const browserHeaders = { Authorization: `Bearer ${secret}`, 'Content-Type': 'app
 const appArgs = () => ['--user', '0', '-v', `${volume}:/data`,
   '-e', 'HOST=::', '-e', 'PORT=4310', '-e', 'DATABASE_PATH=/data/opendots.sqlite',
   '-e', `OWNER_TOKEN=${owner}`, '-e', `APP_ORIGIN=${origin}`, '-e', 'OWNER_ID=smoke-owner',
-  '-e', 'INTELLIGENCE_API_KEY=', '-e', 'OPENAI_API_KEY=', '-e', 'OPENAI_MODEL=gpt-4.1-mini',
+  '-e', 'INTELLIGENCE_API_KEY=', '-e', 'OPENAI_API_KEY=', '-e', 'OPENAI_MODEL=gpt-6-luna',
   '-e', 'OPENAI_BASE_URL=https://api.openai.com/v1',
   '-e', 'BROWSER_URL=http://browser:4311', '-e', `BROWSER_SECRET=${secret}`];
 
