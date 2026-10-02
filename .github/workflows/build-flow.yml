@@ -5,19 +5,27 @@ on:
     branches: [dev, main]
   pull_request:
     branches: [dev, main]
-  release:
-    types: [published]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  check:
-    uses: wgtechlabs/build-flow-action/.github/workflows/ci.yml@b46ac3e40de838b87e1da6b3e69382982d080916 # v0.2.1
+  build-flow:
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+      security-events: write
+      actions: read
+    uses: wgtechlabs/build-flow-action/.github/workflows/app.yml@260b9a063ef59ccc760155c19902320feb7e25cb # v0.3.1
     with:
-      # The bundled Gitleaks action does not support release events.
-      enable-gitleaks: ${{ github.event_name != 'release' }}
+      enable-container: true
+      enable-release: true
+      publish-dev-artifacts: false
+      publish-pr-artifacts: false
+      publish-manual-artifacts: false
+      codeql-build-mode: none
       ci-profile: node
       ci-runtime-version: '24'
       ci-test-command: npm test
@@ -25,31 +33,11 @@ jobs:
         npm run build:app
         npm run build:browser
       ci-docker-smoke-command: npm run test:smoke
-
-  publish:
-    needs: check
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    permissions:
-      contents: read
-      packages: write
-      security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        service: [app, browser]
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: wgtechlabs/container-build-flow-action@fb5c0662b33f7702bc1ccf85350689436989f606 # v1.9.0
-        with:
-          registry: ghcr
-          image-name: opendots-railway-${{ matrix.service }}
-          build-args: OPENDOTS_SERVICE=${{ matrix.service }}
-          platforms: linux/amd64
-          release-platforms: linux/amd64
-          pr-comment-enabled: 'false'
-          vulnerability-comment-enabled: 'false'
-          sarif-category-source: trivy-source-${{ matrix.service }}
-          sarif-category-dockerfile: trivy-dockerfile-${{ matrix.service }}
-          sarif-category-image: trivy-image-${{ matrix.service }}
+      container-registry: ghcr
+      container-platforms: linux/amd64
+      container-release-platforms: linux/amd64
+      container-images: |
+        [
+          {"image-name": "opendots-railway-app", "build-args": "OPENDOTS_SERVICE=app"},
+          {"image-name": "opendots-railway-browser", "build-args": "OPENDOTS_SERVICE=browser"}
+        ]

@@ -53,6 +53,9 @@ authorization.
 - Promote stable `dev` to `main` with a regular merge commit, never a squash or
   rebase merge. Use a meaningful `🚀 release:` title for that pull request.
 - Keep `main` stable and delete merged feature branches when appropriate.
+- Let Build Flow manage the shared release version, changelog, tag, and release.
+  Publish both images from the finalized source before creating the GitHub Release;
+  do not create a release manually to trigger image builds.
 
 ## Deployment invariants
 
