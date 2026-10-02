@@ -4,15 +4,23 @@ Run your own OpenDots workspace with AI coworkers, persistent Spaces and pages, 
 
 ## About Hosting OpenDots
 
-This template builds a pinned version of CopilotKit's OpenDots application and its browser service. It generates the owner login token and private browser secret, connects the services over Railway's private network, and stores local application data on a persistent volume. Only the authenticated application receives a public URL.
+This template builds CopilotKit's OpenDots application and its browser service from the public [deployment repository](https://github.com/warengonzaga/opendots-railway). Its Dockerfile pins the upstream application to a specific commit. It generates the owner login token and private browser secret, connects the services over Railway's private network, and stores local application data on a persistent volume. Only the authenticated application receives a public URL.
 
 OpenDots already runs its agents and scheduler in the application, and uses SQLite for local state. This template therefore needs two services and one volume; it does not need Postgres or a separate cron worker. Keep the app at one replica with serverless sleeping disabled.
 
-## Required configuration
+## Dependencies for OpenDots Hosting
+
+### Deployment Dependencies
 
 At deployment, provide your CopilotKit Intelligence API key, model-provider API key, and a model name available to that key. OpenAI is the default endpoint; compatible providers can use `OPENAI_BASE_URL`.
 
 Open the OpenDots URL and sign in using the generated `OWNER_TOKEN` from the OpenDots service's Variables tab. Keep that token private. Pages and settings persist on the volume; conversation history is stored by your CopilotKit Intelligence project.
+
+## Common Use Cases
+
+- Organize personal projects using Dots, Spaces, and persistent pages.
+- Chat with AI coworkers using your own model credentials.
+- Run recurring work and capture text from public webpages.
 
 ## Included and optional features
 
@@ -22,7 +30,11 @@ Open the OpenDots URL and sign in using the generated `OWNER_TOKEN` from the Ope
 
 This is a single-owner deployment, not a multi-tenant service. Use a dedicated Railway project and configure volume backups. Public-page browsing does not include a search provider and rejects redirects and private network targets.
 
-## Dependencies and documentation
+## Why Deploy OpenDots on Railway?
+
+Railway builds both services from the deployment repository, provides HTTPS for OpenDots, connects Browser over private networking, and attaches persistent storage. You can manage the deployment in one project without a separate Postgres database or cron worker.
+
+## Documentation
 
 - [OpenDots by CopilotKit](https://github.com/CopilotKit/OpenDots)
 - [Deployment source and configuration](https://github.com/warengonzaga/opendots-railway)
