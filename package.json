@@ -1,0 +1,16 @@
+{
+  "name": "opendots-railway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Railway deployment packaging for CopilotKit OpenDots",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --experimental-strip-types tests/config.mjs",
+    "test:smoke": "node tests/smoke.mjs",
+    "build:app": "docker build --build-arg OPENDOTS_SERVICE=app -t opendots-railway:app .",
+    "build:browser": "docker build --build-arg OPENDOTS_SERVICE=browser -t opendots-railway:browser ."
+  },
+  "engines": { "node": ">=22.16.0" },
+  "devDependencies": { "railway": "3.12.0" }
+}
