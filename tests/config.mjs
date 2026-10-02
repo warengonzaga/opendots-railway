@@ -36,7 +36,9 @@ assert.deepEqual(app.variables.BROWSER_SECRET, {
 });
 assert.equal(app.variables.BROWSER_URL.value, 'http://${{Browser.RAILWAY_PRIVATE_DOMAIN}}:4311');
 assert.equal(app.variables.APP_ORIGIN.value, 'https://${{RAILWAY_PUBLIC_DOMAIN}}');
-for (const key of ['INTELLIGENCE_API_KEY', 'OPENAI_API_KEY', 'OPENAI_MODEL']) {
+assert.equal(app.variables.OPENAI_MODEL.value, 'gpt-4.1-mini');
+assert.equal(app.variables.OPENAI_BASE_URL.value, 'https://api.openai.com/v1');
+for (const key of ['INTELLIGENCE_API_KEY', 'OPENAI_API_KEY']) {
   assert.deepEqual(app.variables[key], { type: 'sharedReference', name: key });
 }
 console.log('Railway authoring configuration and security contracts passed (offline).');
