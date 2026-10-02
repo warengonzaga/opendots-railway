@@ -6,9 +6,9 @@ This repository packages upstream commit [`b01ac1f`](https://github.com/CopilotK
 
 **Scope:** chat, Dots, Spaces/pages, recurring work, and read-only public-page browsing. Persistent per-Dot computers, browser logins, terminal access, and computer takeover are **not included**: upstream requires a Docker-socket supervisor and Docker-network endpoints. An external supervisor URL alone does not make that feature work on Railway. See [upstream computer deployment](https://github.com/CopilotKit/OpenDots/blob/b01ac1f6a903e5e56c119d960901353ac0a3d171/docs/COMPUTERS.md).
 
-This is the template source and configuration. A Railway marketplace URL will be added after the template is created and verified in Railway; the GitHub release is not a marketplace publication.
+Deploy with the [OpenDots Railway template](https://railway.com/deploy/opendots), then provide your CopilotKit Intelligence API key, model-provider API key, and model name.
 
-## Create the Railway template
+## Recreate the Railway template
 
 In your Railway workspace, open **Templates → New Template** and add two GitHub services, both using `warengonzaga/opendots-railway`. Keep their names exactly `OpenDots` and `Browser` for the variable references below. The root Dockerfile is shared; `OPENDOTS_SERVICE` selects the correct final build stage.
 
