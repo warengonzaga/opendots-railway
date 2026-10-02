@@ -97,6 +97,8 @@ The supplied `.railway/railway.ts` uses Railway's current TypeScript IaC SDK. It
 
 ## Verification and upgrades
 
+Contributions follow [AGENTS.md](AGENTS.md): start a feature branch from `dev`, squash feature pull requests into `dev`, then promote `dev` to `main` with a regular merge commit. Use Clean Commit messages for commits and squash titles.
+
 With Node 22.16+ and Docker running:
 
 ```sh
@@ -107,7 +109,11 @@ npm run build:browser
 npm run test:smoke
 ```
 
-The smoke check uses fresh disposable containers and a volume, verifies authentication/origin rejection, app privilege dropping, page persistence across container replacement, browser authentication, private-target blocking, and a real public-page capture. It needs no model credentials. CI runs these checks; its success does not verify Railway networking, paid model calls, Slack, or voice.
+The smoke check uses fresh disposable containers and a volume, verifies authentication/origin rejection, app privilege dropping, page persistence across container replacement, browser authentication, private-target blocking, and a real public-page capture. It needs no model credentials. [Build Flow](https://github.com/wgtechlabs/build-flow-action) runs these checks on pull requests, pushes to `dev`/`main`, manual runs, and published releases. Gitleaks runs on branch, pull request, and manual events; its bundled action does not support release events, so release only commits that passed those checks. CI success does not verify Railway networking, paid model calls, Slack, or voice.
+
+After release checks pass, [Container Build Flow](https://github.com/wgtechlabs/container-build-flow-action) publishes separate `linux/amd64` images to `ghcr.io/warengonzaga/opendots-railway-app` and `ghcr.io/warengonzaga/opendots-railway-browser`. A stable release such as `v0.1.1` publishes version tags including `0.1.1` and `latest`. Pull requests, branch pushes, and manual checks do not publish images or create releases. Docker Hub is not required: GHCR uses the built-in `GITHUB_TOKEN` with `packages: write`.
+
+The Railway configuration above continues to build from GitHub. Before switching a public template to images, publish a release containing this workflow, make both GHCR packages public in their package settings, and verify anonymous pulls of both versioned images. Existing releases are not republished automatically. Container scans report findings to GitHub; the action's default scan policy does not block image publication.
 
 To upgrade, change the full upstream commit in `Dockerfile`, review upstream deployment changes, and rerun both builds and checks before releasing. The Node 24 base receives maintenance updates; application source and npm dependencies remain pinned to the upstream commit and lockfile. Back up the volume before upgrading; rolling code back may not reverse a database migration.
 
