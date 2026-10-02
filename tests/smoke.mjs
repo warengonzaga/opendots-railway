@@ -55,7 +55,8 @@ const browserHeaders = { Authorization: `Bearer ${secret}`, 'Content-Type': 'app
 const appArgs = () => ['--user', '0', '-v', `${volume}:/data`,
   '-e', 'HOST=::', '-e', 'PORT=4310', '-e', 'DATABASE_PATH=/data/opendots.sqlite',
   '-e', `OWNER_TOKEN=${owner}`, '-e', `APP_ORIGIN=${origin}`, '-e', 'OWNER_ID=smoke-owner',
-  '-e', 'INTELLIGENCE_API_KEY=', '-e', 'OPENAI_API_KEY=', '-e', 'OPENAI_MODEL=',
+  '-e', 'INTELLIGENCE_API_KEY=', '-e', 'OPENAI_API_KEY=', '-e', 'OPENAI_MODEL=gpt-4.1-mini',
+  '-e', 'OPENAI_BASE_URL=https://api.openai.com/v1',
   '-e', 'BROWSER_URL=http://browser:4311', '-e', `BROWSER_SECRET=${secret}`];
 
 try {
@@ -86,7 +87,7 @@ try {
   assert.equal((await request(app.base, '/api/workspace', { ...appHeaders, 'Sec-Fetch-Site': 'cross-site' })).status, 403);
   const workspace = await request(app.base, '/api/workspace', appHeaders);
   assert.equal(workspace.status, 200);
-  assert.deepEqual(workspace.data.setup.missing, ['INTELLIGENCE_API_KEY', 'OPENAI_API_KEY', 'OPENAI_MODEL']);
+  assert.deepEqual(workspace.data.setup.missing, ['INTELLIGENCE_API_KEY', 'OPENAI_API_KEY']);
   const space = await request(app.base, '/api/spaces', appHeaders, 'POST', { name: 'Railway smoke', description: 'persistence check' });
   assert.equal(space.status, 201);
   assert.equal(typeof space.data.id, 'string');

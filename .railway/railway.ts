@@ -33,7 +33,8 @@ export default defineRailway((ctx) => {
       BROWSER_SECRET: browser.env.BROWSER_SECRET,
       INTELLIGENCE_API_KEY: ctx.shared.INTELLIGENCE_API_KEY,
       OPENAI_API_KEY: ctx.shared.OPENAI_API_KEY,
-      OPENAI_MODEL: ctx.shared.OPENAI_MODEL,
+      OPENAI_MODEL: 'gpt-4.1-mini',
+      OPENAI_BASE_URL: 'https://api.openai.com/v1',
     },
   });
   return project('opendots', { resources: [app, browser, data] });
