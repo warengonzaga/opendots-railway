@@ -1,11 +1,16 @@
 # syntax=docker/dockerfile:1
 ARG OPENDOTS_SERVICE=app
 
-# Application source stays pinned; this repository only packages deployment.
+# Application source stays pinned with a scoped Luna compatibility adjustment.
 FROM node:24-bookworm-slim AS build
 WORKDIR /app
 ADD https://github.com/CopilotKit/OpenDots.git#b01ac1f6a903e5e56c119d960901353ac0a3d171 /app
-RUN npm ci && npm run build && npm prune --omit=dev
+COPY prepare-upstream.mjs /tmp/prepare-upstream.mjs
+RUN node /tmp/prepare-upstream.mjs \
+    && npm ci \
+    && npm test -- tests/tanstack-agent.test.ts \
+    && npm run build \
+    && npm prune --omit=dev
 
 FROM node:24-bookworm-slim AS app
 ENV NODE_ENV=production HOST=:: PORT=4310 DATABASE_PATH=/data/opendots.sqlite
