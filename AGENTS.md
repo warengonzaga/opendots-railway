@@ -68,9 +68,9 @@ authorization.
   the app uses SQLite and runs scheduled work in-process.
 - Keep credentials outside the repository. Use generated secrets and required
   credential inputs in the template, never personal values as defaults.
-- Per-Dot Docker computers are outside this package's scope. Marketplace
-  publication is still pending; a GitHub release does not prove a Railway template
-  was published. Update that status only after verifying the marketplace result.
+- Per-Dot Docker computers are outside this package's scope. The public template is
+  [OpenDots on Railway](https://railway.com/deploy/opendots). Verify marketplace
+  publication separately from GitHub releases.
 
 ## Verification
 

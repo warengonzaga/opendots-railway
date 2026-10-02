@@ -10,6 +10,8 @@ OpenDots already runs its agents and scheduler in the application, and uses SQLi
 
 ## Dependencies for OpenDots Hosting
 
+You need a Railway account, a CopilotKit Intelligence project, and access to a supported model provider.
+
 ### Deployment Dependencies
 
 At deployment, provide your CopilotKit Intelligence API key, model-provider API key, and a model name available to that key. OpenAI is the default endpoint; compatible providers can use `OPENAI_BASE_URL`.
