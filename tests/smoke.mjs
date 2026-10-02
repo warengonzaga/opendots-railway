@@ -74,8 +74,9 @@ try {
 
   let app = await create('opendots-railway:app', 'app', 4310, appArgs());
   await ready(app.base, '/api/workspace');
-  const processStatus = await docker('exec', app.id, 'sh', '-c', 'cat /proc/1/comm /proc/1/status');
-  assert.match(processStatus, /^node\n/);
+  const processStatus = await docker('exec', app.id, 'cat', '/proc/1/status');
+  const command = await docker('exec', app.id, 'cat', '/proc/1/cmdline');
+  assert.deepEqual(command.split('\0').slice(0, 2), ['node', 'entrypoint.mjs']);
   assert.match(processStatus, /^Uid:\s+1000\s+1000\s+1000\s+1000$/m);
   assert.match(processStatus, /^Gid:\s+1000\s+1000\s+1000\s+1000$/m);
   assert.equal((await request(app.base, '/')).status, 200);
