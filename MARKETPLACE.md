@@ -14,7 +14,7 @@ You need a Railway account, a CopilotKit Intelligence project, and access to a s
 
 ### Deployment Dependencies
 
-At deployment, provide your CopilotKit Intelligence API key, model-provider API key, and a model name available to that key. OpenAI is the default endpoint; compatible providers can use `OPENAI_BASE_URL`.
+At deployment, provide only your CopilotKit Intelligence API key and OpenAI API key. The template preconfigures `OPENAI_MODEL=gpt-4.1-mini` and `OPENAI_BASE_URL=https://api.openai.com/v1`; no model or URL input is needed. To use another OpenAI-compatible provider, change those two settings to its endpoint and model name and supply its API key.
 
 Open the OpenDots URL and sign in using the generated `OWNER_TOKEN` from the OpenDots service's Variables tab. Keep that token private. Pages and settings persist on the volume; conversation history is stored by your CopilotKit Intelligence project.
 

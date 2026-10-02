@@ -6,7 +6,7 @@ This repository packages upstream commit [`b01ac1f`](https://github.com/CopilotK
 
 **Scope:** chat, Dots, Spaces/pages, recurring work, and read-only public-page browsing. Persistent per-Dot computers, browser logins, terminal access, and computer takeover are **not included**: upstream requires a Docker-socket supervisor and Docker-network endpoints. An external supervisor URL alone does not make that feature work on Railway. See [upstream computer deployment](https://github.com/CopilotKit/OpenDots/blob/b01ac1f6a903e5e56c119d960901353ac0a3d171/docs/COMPUTERS.md).
 
-Deploy with the [OpenDots Railway template](https://railway.com/deploy/opendots), then provide your CopilotKit Intelligence API key, model-provider API key, and model name.
+Deploy with the [OpenDots Railway template](https://railway.com/deploy/opendots), then provide your CopilotKit Intelligence API key and OpenAI API key. GPT-4.1 mini and the standard OpenAI endpoint are preconfigured.
 
 ## Recreate the Railway template
 
@@ -41,7 +41,7 @@ Set these variables in the **template editor**. `secret()` is a template functio
 | `BROWSER_SECRET` | `${{Browser.BROWSER_SECRET}}` |
 | `INTELLIGENCE_API_KEY` | Required input; the user's CopilotKit Intelligence project key |
 | `OPENAI_API_KEY` | Required input; the user's model-provider API key |
-| `OPENAI_MODEL` | Required input; a model available to that provider/key |
+| `OPENAI_MODEL` | `gpt-4.1-mini` (preconfigured; change only to use another model) |
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` |
 
 ### Browser variables
@@ -57,12 +57,14 @@ Use [MARKETPLACE.md](MARKETPLACE.md) for the listing description. Create the tem
 
 After deployment, open the OpenDots domain and sign in with the generated `OWNER_TOKEN` from that service's Variables tab. Keep it private. Railway terminates HTTPS; `APP_ORIGIN` must match the exact public HTTPS origin without a trailing slash. Update it if you add a custom domain.
 
+The model and API URL require no input for OpenAI. To use another OpenAI-compatible provider, change `OPENAI_BASE_URL` and `OPENAI_MODEL` to that provider's endpoint and model name, and supply its API key as `OPENAI_API_KEY`.
+
 ## Deploy through infrastructure as code
 
 The supplied `.railway/railway.ts` uses Railway's current TypeScript IaC SDK. It creates the two services and a volume; it does not create or publish a marketplace template.
 
 1. Create a new empty Railway project and link it using the current [Railway CLI](https://docs.railway.com/guides/cli). Use a dedicated project: this configuration owns its resource graph.
-2. Create shared variables `OWNER_TOKEN` and `BROWSER_SECRET` with **different**, randomly generated values of at least 24 characters. Also create `INTELLIGENCE_API_KEY`, `OPENAI_API_KEY`, and `OPENAI_MODEL`. Keep all credentials in Railway, not this repository.
+2. Create shared variables `OWNER_TOKEN` and `BROWSER_SECRET` with **different**, randomly generated values of at least 24 characters. Also create `INTELLIGENCE_API_KEY` and `OPENAI_API_KEY`. The configuration supplies `OPENAI_MODEL=gpt-4.1-mini` and `OPENAI_BASE_URL=https://api.openai.com/v1`. Keep all credentials in Railway, not this repository.
 3. Run:
 
    ```sh
@@ -93,7 +95,7 @@ The supplied `.railway/railway.ts` uses Railway's current TypeScript IaC SDK. It
 - The Browser service accepts authenticated requests over the private network. Upstream blocks private targets and redirects and disables JavaScript. It is a read-only page capture service, not an interactive computer or web search engine. Railway's network is not the same isolation boundary as upstream's full Docker Compose network setup; keep this in a dedicated project, without unrelated sensitive services.
 - Owner-token access is a single-owner deployment. Do not treat it as multi-tenant isolation.
 - Slack and calls are optional: configure managed Channels and explicit Slack allowlists, or the separate voice provider, following [upstream setup](https://github.com/CopilotKit/OpenDots/blob/b01ac1f6a903e5e56c119d960901353ac0a3d171/docs/SETUP.md). They are not enabled or verified by this package.
-- `COPILOTKIT_LICENSE_TOKEN` is not used by this pinned OpenDots version. Chat requires the Intelligence key, model API key, and explicit model name.
+- `COPILOTKIT_LICENSE_TOKEN` is not used by this pinned OpenDots version. Chat requires the Intelligence key and model API key; the template supplies the model name and API URL.
 
 ## Verification and upgrades
 
